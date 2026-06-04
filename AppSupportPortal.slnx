@@ -1,3 +1,5 @@
 <Solution>
   <Project Path="AppSupportPortal.Web/AppSupportPortal.Web.csproj" />
+  <Project Path="SeDevOps.Api/SeDevOps.Api.csproj" />
+  <Project Path="SeDevOps.Data/SeDevOps.Data.csproj" />
 </Solution>
