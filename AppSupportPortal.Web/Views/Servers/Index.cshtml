@@ -1,0 +1,27 @@
+﻿@model IEnumerable<AppSupportPortal.Web.Models.ServerViewModel>
+
+<h2>Servers</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var server in Model)
+        {
+            <tr>
+                <td>@server.ServerName</td>
+                <td>@server.ServerDescription</td>
+                <td>@server.ServerStatus</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@server.ServerId" class="btn btn-sm btn-info">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

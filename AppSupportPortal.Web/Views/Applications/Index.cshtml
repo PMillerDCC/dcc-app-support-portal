@@ -1,0 +1,34 @@
+﻿@model IEnumerable<AppSupportPortal.Web.Models.ApplicationViewModel>
+
+<h2>Applications</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Application</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Developer</th>
+            <th>Server</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var app in Model)
+        {
+            <tr>
+                <td>@app.ApplicationName</td>
+                <td>@app.ApplicationDescription</td>
+                <td>@app.ApplicationDeveloper</td>
+                <td>@app.ServerId</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@app.ApplicationId" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@app.ApplicationId" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

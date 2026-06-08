@@ -3,48 +3,138 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AppSupportPortal.Web</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - Support Portal</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AppSupportPortal.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AppSupportPortal.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Support Portal</a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @ActiveClass("Applications")"
+                               asp-controller="Applications" asp-action="Index">Applications</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link @ActiveClass("Servers")"
+                               asp-controller="Servers" asp-action="Index">Servers</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @ActiveClass("Users")"
+                               asp-controller="Users" asp-action="Index">Users</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @ActiveClass("Notes")"
+                               asp-controller="Notes" asp-action="Index">Notes</a>
+                        </li>
+
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <main role="main" class="container mt-3">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top footer text-muted mt-4">
         <div class="container">
-            &copy; 2026 - AppSupportPortal.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; @DateTime.Now.Year - Support Portal
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/site.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="toast align-items-center text-bg-success border-0" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @TempData["Success"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                                data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="toast align-items-center text-bg-danger border-0" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @TempData["Error"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                                data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            }
+
+            @if (TempData["Warning"] != null)
+            {
+                <div class="toast align-items-center text-bg-warning border-0" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @TempData["Warning"]
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto"
+                                data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            }
+
+            @if (TempData["Info"] != null)
+            {
+                <div class="toast align-items-center text-bg-info border-0" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @TempData["Info"]
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto"
+                                data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.toast').forEach(toastEl => {
+        const t = new bootstrap.Toast(toastEl)
+        t.show()
+        })
+    </script>
 </body>
 </html>
+
+@functions {
+    string ActiveClass(string controller)
+    {
+        var current = ViewContext.RouteData.Values["controller"]?.ToString();
+        return string.Equals(current, controller, StringComparison.OrdinalIgnoreCase)
+            ? "active"
+            : "";
+    }
+}

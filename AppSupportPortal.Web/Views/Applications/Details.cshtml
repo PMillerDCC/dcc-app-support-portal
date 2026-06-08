@@ -1,0 +1,12 @@
+﻿@model AppSupportPortal.Web.Models.ApplicationViewModel
+
+<h2>Application Details</h2>
+
+<div class="card p-3">
+    <p><strong>Name:</strong> @Model.ApplicationName</p>
+    <p><strong>Description:</strong> @Model.ApplicationDescription</p>
+    <p><strong>Developer:</strong> @Model.ApplicationDeveloper</p>
+    <p><strong>Server:</strong> @Model.ServerId</p>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Back</a>

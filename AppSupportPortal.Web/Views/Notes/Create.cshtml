@@ -1,0 +1,24 @@
+﻿@model AppSupportPortal.Web.Models.NoteViewModel
+
+<h2>Create Note</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="NoteText" class="form-label"></label>
+        <textarea asp-for="NoteText" class="form-control"></textarea>
+        <span asp-validation-for="NoteText" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ApplicationId" class="form-label">Application</label>
+        <select asp-for="ApplicationId" asp-items="@(new SelectList(Model.Applications, "ApplicationId", "ApplicationName"))" class="form-select"></select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="UserId" class="form-label">User</label>
+        <select asp-for="UserId" asp-items="@(new SelectList(Model.Users, "UserId", "UserName"))" class="form-select"></select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

@@ -1,0 +1,27 @@
+﻿@model IEnumerable<AppSupportPortal.Web.Models.NoteViewModel>
+
+<h2>Notes</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add Note</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Note</th>
+            <th>Application</th>
+            <th>User</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var note in Model)
+        {
+            <tr>
+                <td>@note.NoteText</td>
+                <td>@note.ApplicationId</td>
+                <td>@note.UserId</td>
+            </tr>
+        }
+    </tbody>
+</table>

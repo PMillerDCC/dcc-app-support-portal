@@ -1,0 +1,16 @@
+﻿@model ServerViewModel
+@{
+    ViewData["Title"] = "Delete Server";
+}
+
+<h2>Delete Server</h2>
+
+<div class="alert alert-danger">
+    Are you sure you want to delete <strong>@Model.ServerName</strong>?
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="ServerId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

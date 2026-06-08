@@ -5,6 +5,15 @@ namespace SeDevOps.Data;
 
 public class AppDbContext : DbContext
 {
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<UserRole>()
+            .HasKey(ur => new { ur.UserId, ur.RoleId });
+    }
+
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
