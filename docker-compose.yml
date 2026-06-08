@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: dcc_sql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - dccnet
+
+  api:
+    build:
+      context: ./SeDevOps.Api
+      dockerfile: Dockerfile
+    container_name: dcc_api
+    ports:
+      - "5001:8080"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=DCC;User=sa;Password=YourStrong!Passw0rd;
+    networks:
+      - dccnet
+
+  web:
+    build:
+      context: ./AppSupportPortal.Web
+      dockerfile: Dockerfile
+    container_name: dcc_web
+    ports:
+      - "5000:8080"
+    depends_on:
+      - api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ApiBaseUrl=http://api:8080
+    networks:
+      - dccnet
+
+networks:
+  dccnet:
+
+volumes:
+  sql_data:
