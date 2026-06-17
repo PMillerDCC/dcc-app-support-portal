@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: dcc-app-support-portal
-    runtime: dotnet
-    buildCommand: dotnet build --configuration Release
-    startCommand: dotnet SeDevOps.Api.dll
-    envVars:
-      - key: ASPNETCORE_URLS
-        value: http://0.0.0.0:${PORT}
