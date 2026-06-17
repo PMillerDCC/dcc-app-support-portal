@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "AppSupportPortal.Web\\AppSupportPortal.Web.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "SeDevOps.Api\\SeDevOps.Api.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

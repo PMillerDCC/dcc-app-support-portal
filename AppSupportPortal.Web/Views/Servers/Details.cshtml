@@ -1,0 +1,13 @@
+﻿@model AppSupportPortal.Web.Models.ServerViewModel
+
+<h2>Server Details</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h4>@Model.Name</h4>
+        <p><strong>Description:</strong> @Model.Description</p>
+    </div>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning mt-3">Edit</a>
+<a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
