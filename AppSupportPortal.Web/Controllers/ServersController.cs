@@ -1,5 +1,4 @@
 ﻿using AppSupportPortal.Web.Models;
-using AppSupportPortal.Web.Models.AppSupportPortal.Web.Services;
 using AppSupportPortal.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 

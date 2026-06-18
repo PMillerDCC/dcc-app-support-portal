@@ -7,10 +7,14 @@ namespace AppSupportPortal.Web.Controllers
     public class ApplicationsController : Controller
     {
         private readonly IApplicationsApiService _applicationsService;
+        private readonly IServersApiService _serversService;
 
-        public ApplicationsController(IApplicationsApiService applicationsService)
+        public ApplicationsController(
+            IApplicationsApiService applicationsService,
+            IServersApiService serversService)
         {
             _applicationsService = applicationsService;
+            _serversService = serversService;
         }
 
         // GET: Applications
@@ -31,9 +35,16 @@ namespace AppSupportPortal.Web.Controllers
         }
 
         // GET: Applications/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var servers = await _serversService.GetAllAsync();
+
+            var model = new ApplicationViewModel
+            {
+                Servers = servers
+            };
+
+            return View(model);
         }
 
         // POST: Applications/Create
@@ -42,13 +53,17 @@ namespace AppSupportPortal.Web.Controllers
         public async Task<IActionResult> Create(ApplicationViewModel model)
         {
             if (!ModelState.IsValid)
+            {
+                model.Servers = await _serversService.GetAllAsync();
                 return View(model);
+            }
 
             var created = await _applicationsService.CreateAsync(model);
 
             if (!created)
             {
                 ModelState.AddModelError("", "Unable to create application via API.");
+                model.Servers = await _serversService.GetAllAsync();
                 return View(model);
             }
 
@@ -62,6 +77,8 @@ namespace AppSupportPortal.Web.Controllers
             if (app == null)
                 return NotFound();
 
+            app.Servers = await _serversService.GetAllAsync();
+
             return View(app);
         }
 
@@ -74,13 +91,17 @@ namespace AppSupportPortal.Web.Controllers
                 return BadRequest();
 
             if (!ModelState.IsValid)
+            {
+                model.Servers = await _serversService.GetAllAsync();
                 return View(model);
+            }
 
             var updated = await _applicationsService.UpdateAsync(model);
 
             if (!updated)
             {
                 ModelState.AddModelError("", "Unable to update application via API.");
+                model.Servers = await _serversService.GetAllAsync();
                 return View(model);
             }
 

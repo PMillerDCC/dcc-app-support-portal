@@ -5,24 +5,25 @@
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
 
-    
-
     <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
+        <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
+        <label asp-for="Description"></label>
         <input asp-for="Description" class="form-control" />
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="ServerName" class="form-label"></label>
-        <input asp-for="ServerName" class="form-control" />
-        <span asp-validation-for="ServerName" class="text-danger"></span>
+        <label asp-for="ServerId">Server</label>
+        <select asp-for="ServerId"
+                asp-items="@(new SelectList(Model.Servers, "Id", "Name"))"
+                class="form-select">
+        </select>
+        <span asp-validation-for="ServerId" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Save Changes</button>

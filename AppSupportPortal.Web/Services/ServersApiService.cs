@@ -1,24 +1,4 @@
-﻿using AppSupportPortal.Web.Models.AppSupportPortal.Web.Services;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http.HttpResults;
-
-namespace AppSupportPortal.Web.Models;
-
-public class ServerViewModel
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string? Description { get; set; }
-}
-This matches the typical Server entity in your API.
-
-2. ServersApiService
-If you don’t already have this, create:
-
-Code
-AppSupportPortal.Web/Services/ServersApiService.cs
-csharp
-using AppSupportPortal.Web.Models;
+﻿using AppSupportPortal.Web.Models;
 using System.Net.Http.Json;
 
 namespace AppSupportPortal.Web.Services

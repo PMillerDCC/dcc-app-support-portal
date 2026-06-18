@@ -23,8 +23,20 @@ namespace SeDevOps.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ApplicationDto>>> GetAll()
         {
-            var apps = await _context.Applications.ToListAsync();
-            return Ok(_mapper.Map<IEnumerable<ApplicationDto>>(apps));
+            var apps = await _context.Applications
+                .Include(a => a.Server)
+                .ToListAsync();
+
+            var dtos = apps.Select(a => new ApplicationDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Description = a.Description,
+                ServerId = a.ServerId,
+                ServerName = a.Server.Name
+            });
+
+            return Ok(dtos);
         }
 
         [HttpGet("{id}")]
