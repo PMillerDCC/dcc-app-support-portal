@@ -1,0 +1,32 @@
+﻿@model AppSupportPortal.Web.Models.NoteViewModel
+
+<h2>Create Note</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Content" class="form-label"></label>
+        <textarea asp-for="Content" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ApplicationId" class="form-label"></label>
+        <select asp-for="ApplicationId" class="form-select">
+            @foreach (var app in ViewBag.Applications)
+            {
+                <option value="@app.Id">@app.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="UserId" class="form-label"></label>
+        <select asp-for="UserId" class="form-select">
+            @foreach (var u in ViewBag.Users)
+            {
+                <option value="@u.Id">@u.UserName</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

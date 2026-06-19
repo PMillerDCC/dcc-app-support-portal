@@ -39,6 +39,17 @@
                 </li>
 
             </ul>
+                    @{
+                        var role = TempData["CurrentRole"]?.ToString() ?? "Regular";
+                        TempData.Keep("CurrentRole");
+                    }
+
+                    <form asp-controller="Home" asp-action="SetRole" method="post" class="d-flex">
+                        <select name="role" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="Regular" selected="@(role == "Regular")">Regular</option>
+                            <option value="Admin" selected="@(role == "Admin")">Admin</option>
+                        </select>
+                    </form>
         </div>
             </div>
         </nav>

@@ -1,6 +1,6 @@
-﻿namespace SeDevOps.Api.Dtos
+﻿namespace AppSupportPortal.Web.Models
 {
-    public class NoteDto
+    public class NoteViewModel
     {
         public int Id { get; set; }
         public string Content { get; set; }

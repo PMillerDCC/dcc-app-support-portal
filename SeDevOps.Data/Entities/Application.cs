@@ -11,8 +11,8 @@ namespace SeDevOps.Data.Entities
         public string Description { get; set; } = string.Empty;
 
         public int ServerId { get; set; }
-        public Server Server { get; set; }
+        public Server? Server { get; set; }
 
-        public ICollection<Note> Notes { get; set; } = new List<Note>();
+        public ICollection<Note>? Notes { get; set; } = new List<Note>();
     }
 }

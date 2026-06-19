@@ -1,7 +1,10 @@
 ﻿@model AppSupportPortal.Web.Models.ServerViewModel
 
 <h2>Server Details</h2>
-
+@{
+    var role = TempData["CurrentRole"]?.ToString() ?? "Regular";
+    TempData.Keep("CurrentRole");
+}
 <div class="card">
     <div class="card-body">
         <h4>@Model.Name</h4>

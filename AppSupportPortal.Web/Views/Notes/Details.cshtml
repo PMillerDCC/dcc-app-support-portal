@@ -1,0 +1,21 @@
+﻿@model AppSupportPortal.Web.Models.NoteViewModel
+
+<h2>Note Details</h2>
+
+<div>
+    <p><strong>Content:</strong> @Model.Content</p>
+    <p><strong>User:</strong> @Model.UserName</p>
+    <p><strong>Application:</strong> @Model.ApplicationName</p>
+    <p><strong>Created:</strong> @Model.CreatedAt.ToString("g")</p>
+</div>
+
+@{
+    var role = TempData["CurrentRole"]?.ToString() ?? "Regular";
+    TempData.Keep("CurrentRole");
+}
+
+@if (role == "Admin")
+{
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+}

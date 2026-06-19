@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AppSupportPortal.Web.Controllers
 {
-    public class ServersController : Controller
+    public class UsersController : Controller
     {
-        private readonly IServersApiService _servers;
+        private readonly IUsersApiService _users;
 
         private bool IsAdmin()
         {
@@ -14,24 +14,30 @@ namespace AppSupportPortal.Web.Controllers
             return TempData["CurrentRole"]?.ToString() == "Admin";
         }
 
-        public ServersController(IServersApiService servers)
+        public UsersController(IUsersApiService users)
         {
-            _servers = servers;
+            _users = users;
         }
 
+        // -----------------------------
+        // INDEX
+        // -----------------------------
         public async Task<IActionResult> Index()
         {
-            var servers = await _servers.GetAllAsync();
-            return View(servers);
+            var users = await _users.GetAllAsync();
+            return View(users);
         }
 
+        // -----------------------------
+        // DETAILS
+        // -----------------------------
         public async Task<IActionResult> Details(int id)
         {
-            var server = await _servers.GetByIdAsync(id);
-            if (server == null)
+            var user = await _users.GetByIdAsync(id);
+            if (user == null)
                 return NotFound();
 
-            return View(server);
+            return View(user);
         }
 
         // -----------------------------
@@ -47,7 +53,7 @@ namespace AppSupportPortal.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ServerViewModel model)
+        public async Task<IActionResult> Create(UserViewModel model)
         {
             if (!IsAdmin())
                 return Forbid();
@@ -55,13 +61,15 @@ namespace AppSupportPortal.Web.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var created = await _servers.CreateAsync(model);
-            if (!created)
+            var success = await _users.CreateAsync(model);
+
+            if (!success)
             {
-                ModelState.AddModelError("", "Unable to create server.");
+                TempData["Error"] = "Failed to create user.";
                 return View(model);
             }
 
+            TempData["Success"] = "User created successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -73,33 +81,32 @@ namespace AppSupportPortal.Web.Controllers
             if (!IsAdmin())
                 return Forbid();
 
-            var server = await _servers.GetByIdAsync(id);
-            if (server == null)
+            var user = await _users.GetByIdAsync(id);
+            if (user == null)
                 return NotFound();
 
-            return View(server);
+            return View(user);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ServerViewModel model)
+        public async Task<IActionResult> Edit(UserViewModel model)
         {
             if (!IsAdmin())
                 return Forbid();
 
-            if (id != model.Id)
-                return BadRequest();
-
             if (!ModelState.IsValid)
                 return View(model);
 
-            var updated = await _servers.UpdateAsync(model);
-            if (!updated)
+            var success = await _users.UpdateAsync(model);
+
+            if (!success)
             {
-                ModelState.AddModelError("", "Unable to update server.");
+                TempData["Error"] = "Failed to update user.";
                 return View(model);
             }
 
+            TempData["Success"] = "User updated successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -111,11 +118,11 @@ namespace AppSupportPortal.Web.Controllers
             if (!IsAdmin())
                 return Forbid();
 
-            var server = await _servers.GetByIdAsync(id);
-            if (server == null)
+            var user = await _users.GetByIdAsync(id);
+            if (user == null)
                 return NotFound();
 
-            return View(server);
+            return View(user);
         }
 
         [HttpPost]
@@ -125,14 +132,15 @@ namespace AppSupportPortal.Web.Controllers
             if (!IsAdmin())
                 return Forbid();
 
-            var error = await _servers.DeleteAsync(id);
+            var errorMessage = await _users.DeleteAsync(id);
 
-            if (error != null)
+            if (errorMessage != null)
             {
-                TempData["ErrorMessage"] = error;
+                TempData["Error"] = errorMessage;
                 return RedirectToAction(nameof(Delete), new { id });
             }
 
+            TempData["Success"] = "User deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
     }

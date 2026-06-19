@@ -12,19 +12,28 @@ namespace SeDevOps.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly IMapper _mapper;
 
-        public UsersController(AppDbContext context, IMapper mapper)
+        public UsersController(AppDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
         {
             var users = await _context.Users.ToListAsync();
-            return Ok(_mapper.Map<IEnumerable<UserDto>>(users));
+
+            var dtos = users.Select(u => new UserDto
+            {
+                Id = u.Id,
+                UserName = u.UserName,
+                DisplayName = u.DisplayName,
+                Email = u.Email,
+                RoleName = u.Role,
+                CreatedAt = u.CreatedAt
+            });
+
+            return Ok(dtos);
         }
 
         [HttpGet("{id}")]
@@ -32,16 +41,39 @@ namespace SeDevOps.Api.Controllers
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null) return NotFound();
-            return Ok(_mapper.Map<UserDto>(user));
+
+            var dto = new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                DisplayName = user.DisplayName,
+                Email = user.Email,
+                RoleName = user.Role,
+                CreatedAt = user.CreatedAt
+            };
+
+            return Ok(dto);
         }
 
         [HttpPost]
         public async Task<ActionResult<UserDto>> Create(UserDto dto)
         {
-            var user = _mapper.Map<User>(dto);
+            var user = new User
+            {
+                UserName = dto.UserName,
+                DisplayName = dto.DisplayName,
+                Email = dto.Email,
+                Role = dto.RoleName,
+                CreatedAt = DateTime.UtcNow
+            };
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = user.Id }, _mapper.Map<UserDto>(user));
+
+            dto.Id = user.Id;
+            dto.CreatedAt = user.CreatedAt;
+
+            return CreatedAtAction(nameof(Get), new { id = user.Id }, dto);
         }
 
         [HttpPut("{id}")]
@@ -52,7 +84,11 @@ namespace SeDevOps.Api.Controllers
             var user = await _context.Users.FindAsync(id);
             if (user == null) return NotFound();
 
-            _mapper.Map(dto, user);
+            user.UserName = dto.UserName;
+            user.DisplayName = dto.DisplayName;
+            user.Email = dto.Email;
+            user.Role = dto.RoleName;
+
             await _context.SaveChangesAsync();
             return NoContent();
         }

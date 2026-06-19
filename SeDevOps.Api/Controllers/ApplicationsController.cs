@@ -42,18 +42,34 @@ namespace SeDevOps.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ApplicationDto>> Get(int id)
         {
-            var app = await _context.Applications.FindAsync(id);
-            if (app == null) return NotFound();
-            return Ok(_mapper.Map<ApplicationDto>(app));
+            var app = await _context.Applications
+                .Include(a => a.Server)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (app == null)
+                return NotFound();
+
+            var dto = new ApplicationDto
+            {
+                Id = app.Id,
+                Name = app.Name,
+                Description = app.Description,
+                ServerId = app.ServerId,
+                ServerName = app.Server?.Name
+            };
+
+            return Ok(dto);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApplicationDto>> Create(ApplicationDto dto)
+        public async Task<ActionResult<ApplicationDto>> Create(ApplicationCreateDto dto)
         {
             var app = _mapper.Map<Application>(dto);
             _context.Applications.Add(app);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = app.Id }, _mapper.Map<ApplicationDto>(app));
+
+            var result = _mapper.Map<ApplicationDto>(app);
+            return CreatedAtAction(nameof(Get), new { id = app.Id }, result);
         }
 
         [HttpPut("{id}")]

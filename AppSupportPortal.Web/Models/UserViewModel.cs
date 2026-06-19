@@ -1,6 +1,6 @@
-﻿namespace SeDevOps.Api.Dtos
+﻿namespace AppSupportPortal.Web.Models
 {
-    public class UserDto
+    public class UserViewModel
     {
         public int Id { get; set; }
         public string UserName { get; set; } = string.Empty;

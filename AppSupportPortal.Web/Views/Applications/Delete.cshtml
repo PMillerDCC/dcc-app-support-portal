@@ -1,7 +1,10 @@
 ﻿@model AppSupportPortal.Web.Models.ApplicationViewModel
 
 <h2>Delete Application</h2>
-
+@{
+    var role = TempData["CurrentRole"]?.ToString() ?? "Regular";
+    TempData.Keep("CurrentRole");
+}
 <div class="alert alert-danger">
     Are you sure you want to delete <strong>@Model.Name</strong>?
 </div>

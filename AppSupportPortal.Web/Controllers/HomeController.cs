@@ -21,4 +21,17 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    [HttpPost]
+    public IActionResult SetRole(string role)
+    {
+        TempData["CurrentRole"] = role;
+
+        var referer = Request.Headers["Referer"].ToString();
+
+        if (!string.IsNullOrEmpty(referer))
+            return Redirect(referer);
+
+        return RedirectToAction("Index", "Home");
+    }
 }

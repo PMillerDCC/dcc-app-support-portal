@@ -60,11 +60,19 @@ namespace SeDevOps.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var server = await _context.Servers.FindAsync(id);
-            if (server == null) return NotFound();
+            var server = await _context.Servers
+                .Include(s => s.Applications)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (server == null)
+                return NotFound();
+
+            if (server.Applications.Any())
+                return BadRequest("Cannot delete a server that has applications assigned.");
 
             _context.Servers.Remove(server);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
     }

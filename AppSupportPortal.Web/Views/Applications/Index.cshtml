@@ -2,9 +2,17 @@
 
 <h2>Applications</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
+@{
+    var role = TempData["CurrentRole"]?.ToString() ?? "Regular";
+    TempData.Keep("CurrentRole");
+}
+
+@if (role == "Admin")
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
 
 <table class="table table-striped">
     <thead>
@@ -12,22 +20,26 @@
             <th>Name</th>
             <th>Description</th>
             <th>Server Name</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model)
-{
-        <tr>
-            <td>@item.Name</td>
-            <td>@item.Description</td>
-            <td>@item.ServerName</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.Name</td>
+                <td>@a.Description</td>
+                <td>@a.ServerName</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@a.Id" class="btn btn-info btn-sm">Details</a>
+
+                    @if (role == "Admin")
+                    {
+                        <a asp-action="Edit" asp-route-id="@a.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@a.Id" class="btn btn-danger btn-sm">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

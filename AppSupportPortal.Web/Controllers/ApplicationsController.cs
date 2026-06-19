@@ -1,133 +1,166 @@
 ﻿using AppSupportPortal.Web.Models;
 using AppSupportPortal.Web.Services;
+using AspNetCoreGeneratedDocument;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppSupportPortal.Web.Controllers
 {
     public class ApplicationsController : Controller
     {
-        private readonly IApplicationsApiService _applicationsService;
-        private readonly IServersApiService _serversService;
+        private readonly IApplicationsApiService _applications;
+        private readonly IServersApiService _servers;
+        private readonly IUsersApiService _users;
+        private readonly INotesApiService _notes;
 
-        public ApplicationsController(
-            IApplicationsApiService applicationsService,
-            IServersApiService serversService)
+        private bool IsAdmin()
         {
-            _applicationsService = applicationsService;
-            _serversService = serversService;
+            TempData.Keep("CurrentRole");
+            return TempData["CurrentRole"]?.ToString() == "Admin";
         }
 
-        // GET: Applications
+        public ApplicationsController(
+            IApplicationsApiService applications,
+            IServersApiService servers,
+            IUsersApiService users,
+            INotesApiService notes)
+        {
+            _applications = applications;
+            _servers = servers;
+            _users = users;
+            _notes = notes;
+        }
+
+        // -----------------------------
+        // INDEX
+        // -----------------------------
         public async Task<IActionResult> Index()
         {
-            var apps = await _applicationsService.GetAllAsync();
+            var apps = await _applications.GetAllAsync();
             return View(apps);
         }
 
-        // GET: Applications/Details/5
+        // -----------------------------
+        // DETAILS
+        // -----------------------------
         public async Task<IActionResult> Details(int id)
         {
-            var app = await _applicationsService.GetByIdAsync(id);
-            if (app == null)
-                return NotFound();
+            var app = await _applications.GetByIdAsync(id);
+            if (app == null) return NotFound();
+
+            var notes = await _notes.GetByApplicationAsync(id);
+
+            ViewBag.Notes = notes;
 
             return View(app);
         }
 
-        // GET: Applications/Create
+        // -----------------------------
+        // CREATE
+        // -----------------------------
         public async Task<IActionResult> Create()
         {
-            var servers = await _serversService.GetAllAsync();
+            if (!IsAdmin())
+                return Forbid();
 
-            var model = new ApplicationViewModel
-            {
-                Servers = servers
-            };
+            ViewBag.Servers = await _servers.GetAllAsync();
+            ViewBag.Users = await _users.GetAllAsync();
 
-            return View(model);
+            return View();
         }
 
-        // POST: Applications/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ApplicationViewModel model)
         {
+            if (!IsAdmin())
+                return Forbid();
+
             if (!ModelState.IsValid)
             {
-                model.Servers = await _serversService.GetAllAsync();
+                ViewBag.Servers = await _servers.GetAllAsync();
+                ViewBag.Users = await _users.GetAllAsync();
                 return View(model);
             }
 
-            var created = await _applicationsService.CreateAsync(model);
-
+            var created = await _applications.CreateAsync(model);
             if (!created)
             {
-                ModelState.AddModelError("", "Unable to create application via API.");
-                model.Servers = await _serversService.GetAllAsync();
+                ModelState.AddModelError("", "Unable to create application.");
+
+                ViewBag.Servers = await _servers.GetAllAsync();
+                ViewBag.Users = await _users.GetAllAsync();
+
                 return View(model);
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Applications/Edit/5
+        // -----------------------------
+        // EDIT
+        // -----------------------------
         public async Task<IActionResult> Edit(int id)
         {
-            var app = await _applicationsService.GetByIdAsync(id);
+            if (!IsAdmin())
+                return Forbid();
+
+            var app = await _applications.GetByIdAsync(id);
             if (app == null)
                 return NotFound();
-
-            app.Servers = await _serversService.GetAllAsync();
 
             return View(app);
         }
 
-        // POST: Applications/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ApplicationViewModel model)
         {
+            if (!IsAdmin())
+                return Forbid();
+
             if (id != model.Id)
                 return BadRequest();
 
             if (!ModelState.IsValid)
-            {
-                model.Servers = await _serversService.GetAllAsync();
                 return View(model);
-            }
 
-            var updated = await _applicationsService.UpdateAsync(model);
-
+            var updated = await _applications.UpdateAsync(model);
             if (!updated)
             {
-                ModelState.AddModelError("", "Unable to update application via API.");
-                model.Servers = await _serversService.GetAllAsync();
+                ModelState.AddModelError("", "Unable to update application.");
                 return View(model);
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Applications/Delete/5
+        // -----------------------------
+        // DELETE
+        // -----------------------------
         public async Task<IActionResult> Delete(int id)
         {
-            var app = await _applicationsService.GetByIdAsync(id);
+            if (!IsAdmin())
+                return Forbid();
+
+            var app = await _applications.GetByIdAsync(id);
             if (app == null)
                 return NotFound();
 
             return View(app);
         }
 
-        // POST: Applications/DeleteConfirmed/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var deleted = await _applicationsService.DeleteAsync(id);
+            if (!IsAdmin())
+                return Forbid();
 
-            if (!deleted)
+            var error = await _applications.DeleteAsync(id);
+
+            if (error != null)
             {
-                ModelState.AddModelError("", "Unable to delete application via API.");
+                TempData["ErrorMessage"] = error;
                 return RedirectToAction(nameof(Delete), new { id });
             }
 

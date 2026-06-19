@@ -1,7 +1,7 @@
 ﻿@model AppSupportPortal.Web.Models.ApplicationViewModel
 
 <h2>Create Application</h2>
-
+<div asp-validation-summary="All" class="text-danger"></div>
 <form asp-action="Create" method="post">
     <div class="mb-3">
         <label asp-for="Name"></label>
@@ -18,7 +18,7 @@
     <div class="mb-3">
         <label asp-for="ServerId">Server</label>
         <select asp-for="ServerId"
-                asp-items="@(new SelectList(Model.Servers, "Id", "Name"))"
+                asp-items="@(new SelectList(ViewBag.Servers, "Id", "Name"))"
                 class="form-select">
             <option value="">-- Select Server --</option>
         </select>

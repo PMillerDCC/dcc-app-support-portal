@@ -3,15 +3,6 @@ using System.Net.Http.Json;
 
 namespace AppSupportPortal.Web.Services
 {
-    public interface IServersApiService
-    {
-        Task<IEnumerable<ServerViewModel>> GetAllAsync();
-        Task<ServerViewModel?> GetByIdAsync(int id);
-        Task<bool> CreateAsync(ServerViewModel model);
-        Task<bool> UpdateAsync(ServerViewModel model);
-        Task<bool> DeleteAsync(int id);
-    }
-
     public class ServersApiService : IServersApiService
     {
         private readonly HttpClient _http;
@@ -22,11 +13,15 @@ namespace AppSupportPortal.Web.Services
         }
 
         public async Task<IEnumerable<ServerViewModel>> GetAllAsync()
-            => await _http.GetFromJsonAsync<IEnumerable<ServerViewModel>>("api/servers")
-               ?? Enumerable.Empty<ServerViewModel>();
+        {
+            return await _http.GetFromJsonAsync<IEnumerable<ServerViewModel>>("api/servers")
+                   ?? Enumerable.Empty<ServerViewModel>();
+        }
 
         public async Task<ServerViewModel?> GetByIdAsync(int id)
-            => await _http.GetFromJsonAsync<ServerViewModel>($"api/servers/{id}");
+        {
+            return await _http.GetFromJsonAsync<ServerViewModel>($"api/servers/{id}");
+        }
 
         public async Task<bool> CreateAsync(ServerViewModel model)
         {
@@ -40,10 +35,17 @@ namespace AppSupportPortal.Web.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        // Returns null on success, or an error message on failure
+        public async Task<string?> DeleteAsync(int id)
         {
             var response = await _http.DeleteAsync($"api/servers/{id}");
-            return response.IsSuccessStatusCode;
+
+            if (response.IsSuccessStatusCode)
+                return null;
+
+            // Read the API error message (e.g. "Cannot delete a server that has applications assigned.")
+            var error = await response.Content.ReadAsStringAsync();
+            return error;
         }
     }
 }

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<AppSupportPortal.Web.Models.NoteViewModel>
+
+<h2>Notes</h2>
+@{
+    var role = TempData["CurrentRole"]?.ToString() ?? "Regular";
+    TempData.Keep("CurrentRole");
+}
+
+@if (role == "Admin")
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New Note</a>
+    </p>
+}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Content</th>
+            <th>User</th>
+            <th>Application</th>
+            <th>Created</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var n in Model)
+        {
+            <tr>
+                <td>@n.Content</td>
+                <td>@n.UserName</td>
+                <td>@n.ApplicationName</td>
+                <td>@n.CreatedAt.ToString("g")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@n.Id" class="btn btn-info btn-sm">Details</a>
+
+                    @if (role == "Admin")
+                    {
+                        <a asp-action="Edit" asp-route-id="@n.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@n.Id" class="btn btn-danger btn-sm">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
