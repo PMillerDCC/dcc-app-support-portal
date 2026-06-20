@@ -17,10 +17,8 @@
 
     <div class="mb-3">
         <label asp-for="ServerId">Server</label>
-        <select asp-for="ServerId"
-                asp-items="@(new SelectList(ViewBag.Servers, "Id", "Name"))"
-                class="form-select">
-            <option value="">-- Select Server --</option>
+        <select asp-for="ServerId" asp-items="Model.Servers" class="form-control">
+            <option value="">-- Select a server --</option>
         </select>
         <span asp-validation-for="ServerId" class="text-danger"></span>
     </div>

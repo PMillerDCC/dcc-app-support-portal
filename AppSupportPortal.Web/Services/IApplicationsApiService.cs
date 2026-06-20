@@ -8,6 +8,6 @@ namespace AppSupportPortal.Web.Services
         Task<ApplicationViewModel?> GetByIdAsync(int id);
         Task<bool> CreateAsync(ApplicationViewModel model);
         Task<bool> UpdateAsync(ApplicationViewModel model);
-        Task<bool> DeleteAsync(int id);
+        Task<string?> DeleteAsync(int id);
     }
 }

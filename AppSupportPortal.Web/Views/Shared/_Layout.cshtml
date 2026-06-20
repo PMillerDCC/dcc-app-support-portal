@@ -53,6 +53,19 @@
         </div>
             </div>
         </nav>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success text-center m-2">
+                @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger text-center m-2">
+                @TempData["Error"]
+            </div>
+        }
     </header>
     <div class="container">
         <main role="main" class="pb-3">

@@ -19,7 +19,14 @@ namespace AppSupportPortal.Web.Services
 
         public async Task<ApplicationViewModel?> GetByIdAsync(int id)
         {
-            return await _http.GetFromJsonAsync<ApplicationViewModel>($"api/applications/{id}");
+            var response = await _http.GetAsync($"api/applications/{id}");
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return null;
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<ApplicationViewModel>();
         }
 
         public async Task<bool> CreateAsync(ApplicationViewModel model)
@@ -34,10 +41,16 @@ namespace AppSupportPortal.Web.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<string?> DeleteAsync(int id)
         {
             var response = await _http.DeleteAsync($"api/applications/{id}");
-            return response.IsSuccessStatusCode;
+
+            if (response.IsSuccessStatusCode)
+                return null; // success
+
+            // read error message if API returns one
+            var error = await response.Content.ReadAsStringAsync();
+            return string.IsNullOrWhiteSpace(error) ? "Failed to delete application." : error;
         }
     }
 }

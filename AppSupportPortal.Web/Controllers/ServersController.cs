@@ -61,7 +61,7 @@ namespace AppSupportPortal.Web.Controllers
                 ModelState.AddModelError("", "Unable to create server.");
                 return View(model);
             }
-
+            TempData["Success"] = "Server created successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -129,10 +129,11 @@ namespace AppSupportPortal.Web.Controllers
 
             if (error != null)
             {
-                TempData["ErrorMessage"] = error;
+                TempData["Error"] = error;
                 return RedirectToAction(nameof(Delete), new { id });
             }
 
+            TempData["Success"] = "Server deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
     }

@@ -41,11 +41,10 @@ namespace AppSupportPortal.Web.Services
             var response = await _http.DeleteAsync($"api/servers/{id}");
 
             if (response.IsSuccessStatusCode)
-                return null;
+                return null; // success
 
-            // Read the API error message (e.g. "Cannot delete a server that has applications assigned.")
             var error = await response.Content.ReadAsStringAsync();
-            return error;
+            return string.IsNullOrWhiteSpace(error) ? "Failed to delete server." : error;
         }
     }
 }

@@ -2,6 +2,7 @@
 using AppSupportPortal.Web.Services;
 using AspNetCoreGeneratedDocument;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AppSupportPortal.Web.Controllers
 {
@@ -11,6 +12,7 @@ namespace AppSupportPortal.Web.Controllers
         private readonly IServersApiService _servers;
         private readonly IUsersApiService _users;
         private readonly INotesApiService _notes;
+        
 
         private bool IsAdmin()
         {
@@ -59,13 +61,24 @@ namespace AppSupportPortal.Web.Controllers
         // -----------------------------
         public async Task<IActionResult> Create()
         {
-            if (!IsAdmin())
-                return Forbid();
+            var servers = await _servers.GetAllAsync();
 
-            ViewBag.Servers = await _servers.GetAllAsync();
-            ViewBag.Users = await _users.GetAllAsync();
+            if (!servers.Any())
+            {
+                TempData["Error"] = "You must create a server before creating an application.";
+                return RedirectToAction("Index");
+            }
 
-            return View();
+            var vm = new ApplicationViewModel
+            {
+                Servers = servers.Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.Name
+                })
+            };
+
+            return View(vm);
         }
 
         [HttpPost]
@@ -77,22 +90,32 @@ namespace AppSupportPortal.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Servers = await _servers.GetAllAsync();
-                ViewBag.Users = await _users.GetAllAsync();
+                model.Servers = (await _servers.GetAllAsync())
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.Id.ToString(),
+                        Text = s.Name
+                    });
+
                 return View(model);
             }
 
             var created = await _applications.CreateAsync(model);
+            
             if (!created)
             {
                 ModelState.AddModelError("", "Unable to create application.");
 
-                ViewBag.Servers = await _servers.GetAllAsync();
-                ViewBag.Users = await _users.GetAllAsync();
-
+                model.Servers = (await _servers.GetAllAsync())
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.Id.ToString(),
+                        Text = s.Name
+                    });
+           
                 return View(model);
             }
-
+            TempData["Success"] = "Application created successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -143,8 +166,11 @@ namespace AppSupportPortal.Web.Controllers
                 return Forbid();
 
             var app = await _applications.GetByIdAsync(id);
+
             if (app == null)
-                return NotFound();
+            {
+                return RedirectToAction(nameof(Index));
+            }
 
             return View(app);
         }
@@ -160,10 +186,11 @@ namespace AppSupportPortal.Web.Controllers
 
             if (error != null)
             {
-                TempData["ErrorMessage"] = error;
+                TempData["Error"] = error;
                 return RedirectToAction(nameof(Delete), new { id });
             }
 
+            TempData["Success"] = "Application deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
     }

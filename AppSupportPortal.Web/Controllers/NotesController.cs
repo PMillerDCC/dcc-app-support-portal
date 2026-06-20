@@ -69,7 +69,8 @@ namespace AppSupportPortal.Web.Controllers
             }
 
             TempData["Success"] = "Note created successfully.";
-            return RedirectToAction("Details", "Applications", new { id = model.ApplicationId });
+            return RedirectToAction("Index");
+
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -107,7 +108,7 @@ namespace AppSupportPortal.Web.Controllers
             }
 
             TempData["Success"] = "Note updated successfully.";
-            return RedirectToAction("Details", "Applications", new { id = model.ApplicationId });
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -138,7 +139,7 @@ namespace AppSupportPortal.Web.Controllers
             }
 
             TempData["Success"] = "Note deleted successfully.";
-            return RedirectToAction("Details", "Applications", new { id = note.ApplicationId });
+            return RedirectToAction("Index");
         }
     }
 }
