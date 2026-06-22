@@ -2,30 +2,27 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy project files
-COPY SeDevOps.Api/SeDevOps.Api.csproj SeDevOps.Api/
-COPY SeDevOps.Data/SeDevOps.Data.csproj SeDevOps.Data/
-COPY AppSupportPortal.Web/AppSupportPortal.Web.csproj AppSupportPortal.Web/
+# Copy only the API project file
+COPY SeDevOps.Api.csproj .
+
+# Copy the Data project file
+COPY ../SeDevOps.Data/SeDevOps.Data.csproj ../SeDevOps.Data/
 
 # Restore dependencies
-RUN dotnet restore SeDevOps.Api/SeDevOps.Api.csproj
+RUN dotnet restore SeDevOps.Api.csproj
 
-# Copy everything else
+# Copy the entire repo (API + Data)
 COPY . .
+COPY ../SeDevOps.Data ../SeDevOps.Data
 
 # Publish the API
-RUN dotnet publish SeDevOps.Api/SeDevOps.Api.csproj -c Release -o /app/publish
-
+RUN dotnet publish SeDevOps.Api.csproj -c Release -o /app/publish
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-
-# Copy published output
 COPY --from=build /app/publish .
 
-# Render exposes PORT dynamically
 ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT}
 
-# Start the API
 ENTRYPOINT ["dotnet", "SeDevOps.Api.dll"]
