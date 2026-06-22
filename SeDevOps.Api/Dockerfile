@@ -2,17 +2,19 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy only the API project file
+# Copy API project file
 COPY SeDevOps.Api.csproj .
 
-# Copy the Data project file
+# Copy Data project file
 COPY ../SeDevOps.Data/SeDevOps.Data.csproj ../SeDevOps.Data/
 
 # Restore dependencies
 RUN dotnet restore SeDevOps.Api.csproj
 
-# Copy the entire repo (API + Data)
+# Copy API source
 COPY . .
+
+# Copy Data project source
 COPY ../SeDevOps.Data ../SeDevOps.Data
 
 # Publish the API
