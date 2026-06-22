@@ -18,7 +18,7 @@ builder.Services.AddHttpClient<IApplicationsApiService, ApplicationsApiService>(
 
 builder.Services.AddHttpClient<IServersApiService, ServersApiService>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7284/");
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]);
 });
 
 builder.Services.AddHttpClient<IUsersApiService, UsersApiService>(client =>
