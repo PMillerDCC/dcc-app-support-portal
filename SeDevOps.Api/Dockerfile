@@ -21,3 +21,5 @@ COPY --from=build /app/publish .
 ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT}
 
 ENTRYPOINT ["dotnet", "SeDevOps.Api.dll"]
+
+# trigger redeploy
