@@ -25,3 +25,4 @@
 		<ProjectReference Include="SeDevOps.Data/SeDevOps.Data.csproj" />
 	</ItemGroup>
 </Project>
+
