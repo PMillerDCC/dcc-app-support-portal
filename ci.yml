@@ -19,14 +19,20 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Restore dependencies
-      working-directory:
-      run: dotnet restore AppSupportPortal.sln
+    # MVC PROJECT
+    - name: Restore MVC
+      run: dotnet restore AppSupportPortal.Web/AppSupportPortal.Web.csproj
 
-    - name: Build solution
-      working-directory:
-      run: dotnet build AppSupportPortal.sln --configuration Release --no-restore
+    - name: Build MVC
+      run: dotnet build AppSupportPortal.Web/AppSupportPortal.Web.csproj --configuration Release --no-restore
 
+    # API PROJECT
+    - name: Restore API
+      run: dotnet restore SeDevOps.Api/SeDevOps.Api.csproj
+
+    - name: Build API
+      run: dotnet build SeDevOps.Api/SeDevOps.Api.csproj --configuration Release --no-restore
+
+    # TESTS (only runs if you have test projects)
     - name: Run tests
-      working-directory:
-      run: dotnet test AppSupportPortal.sln --configuration Release --no-build --verbosity normal
+      run: dotnet test --configuration Release --no-build --verbosity normal
