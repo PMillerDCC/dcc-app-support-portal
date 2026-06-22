@@ -131,6 +131,15 @@ namespace AppSupportPortal.Web.Controllers
             if (app == null)
                 return NotFound();
 
+            // Load servers for dropdown
+            var servers = await _servers.GetAllAsync();
+
+            app.Servers = servers.Select(s => new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = s.Name
+            });
+
             return View(app);
         }
 
@@ -145,15 +154,22 @@ namespace AppSupportPortal.Web.Controllers
                 return BadRequest();
 
             if (!ModelState.IsValid)
+            {
+                var servers = await _servers.GetAllAsync();
+                model.Servers = servers.Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.Name
+                });
                 return View(model);
-
+            }
             var updated = await _applications.UpdateAsync(model);
             if (!updated)
             {
                 ModelState.AddModelError("", "Unable to update application.");
                 return View(model);
             }
-
+            TempData["Success"] = "Application updated successfully.";
             return RedirectToAction(nameof(Index));
         }
 

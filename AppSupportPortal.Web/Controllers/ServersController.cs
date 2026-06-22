@@ -99,7 +99,7 @@ namespace AppSupportPortal.Web.Controllers
                 ModelState.AddModelError("", "Unable to update server.");
                 return View(model);
             }
-
+            TempData["Success"] = "Server updated successfully.";
             return RedirectToAction(nameof(Index));
         }
 

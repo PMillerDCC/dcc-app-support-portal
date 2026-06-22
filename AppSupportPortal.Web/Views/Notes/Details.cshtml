@@ -1,7 +1,10 @@
 ﻿@model AppSupportPortal.Web.Models.NoteViewModel
 
 <h2>Note Details</h2>
-
+@{
+    var role = TempData["CurrentRole"]?.ToString() ?? "Regular";
+    TempData.Keep("CurrentRole");
+}
 <div>
     <p><strong>Content:</strong> @Model.Content</p>
     <p><strong>User:</strong> @Model.UserName</p>
@@ -9,10 +12,7 @@
     <p><strong>Created:</strong> @Model.CreatedAt.ToString("g")</p>
 </div>
 
-@{
-    var role = TempData["CurrentRole"]?.ToString() ?? "Regular";
-    TempData.Keep("CurrentRole");
-}
+<a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
 
 @if (role == "Admin")
 {

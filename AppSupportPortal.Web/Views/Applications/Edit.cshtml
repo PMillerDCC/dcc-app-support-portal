@@ -20,7 +20,7 @@
     <div class="mb-3">
         <label asp-for="ServerId">Server</label>
         <select asp-for="ServerId"
-                asp-items="@(new SelectList(Model.Servers, "Id", "Name"))"
+                asp-items="Model.Servers"
                 class="form-select">
         </select>
         <span asp-validation-for="ServerId" class="text-danger"></span>

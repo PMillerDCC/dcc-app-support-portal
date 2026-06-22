@@ -40,7 +40,7 @@ namespace SeDevOps.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ApplicationDto>> Get(int id)
+        public async Task<ActionResult<ApplicationDto>> GetById(int id)
         {
             var app = await _context.Applications
                 .Include(a => a.Server)
@@ -49,39 +49,50 @@ namespace SeDevOps.Api.Controllers
             if (app == null)
                 return NotFound();
 
-            var dto = new ApplicationDto
-            {
-                Id = app.Id,
-                Name = app.Name,
-                Description = app.Description,
-                ServerId = app.ServerId,
-                ServerName = app.Server?.Name
-            };
-
+            var dto = _mapper.Map<ApplicationDto>(app);
             return Ok(dto);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApplicationDto>> Create(ApplicationCreateDto dto)
+        public async Task<IActionResult> Create(ApplicationCreateDto dto)
         {
-            var app = _mapper.Map<Application>(dto);
-            _context.Applications.Add(app);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var application = _mapper.Map<Application>(dto);
+
+            _context.Applications.Add(application);
             await _context.SaveChangesAsync();
 
-            var result = _mapper.Map<ApplicationDto>(app);
-            return CreatedAtAction(nameof(Get), new { id = app.Id }, result);
+            var resultDto = _mapper.Map<ApplicationDto>(application);
+
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = application.Id },
+                resultDto
+            );
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, ApplicationDto dto)
+        public async Task<IActionResult> Update(int id, ApplicationUpdateDto dto)
         {
-            if (id != dto.Id) return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (id != dto.Id)
+                return BadRequest();
 
             var app = await _context.Applications.FindAsync(id);
-            if (app == null) return NotFound();
+            if (app == null)
+                return NotFound();
 
-            _mapper.Map(dto, app);
+            // Map only the fields that are allowed to change
+            app.Name = dto.Name;
+            app.Description = dto.Description;
+            app.ServerId = dto.ServerId;
+
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 

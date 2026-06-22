@@ -1,4 +1,5 @@
 ﻿using AppSupportPortal.Web.Models;
+using AppSupportPortal.Web.Models.Dtos;
 
 namespace AppSupportPortal.Web.Services
 {
@@ -37,7 +38,16 @@ namespace AppSupportPortal.Web.Services
 
         public async Task<bool> UpdateAsync(ApplicationViewModel model)
         {
-            var response = await _http.PutAsJsonAsync($"api/applications/{model.Id}", model);
+            var dto = new ApplicationUpdateDto
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                ServerId = model.ServerId.Value
+            };
+
+            var response = await _http.PutAsJsonAsync($"api/applications/{model.Id}", dto);
+
             return response.IsSuccessStatusCode;
         }
 
