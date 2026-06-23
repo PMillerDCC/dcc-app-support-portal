@@ -1,11 +1,12 @@
 # dcc-app-support-portal
-ASP.NET Core MVC Application Support Knowledge Portal for Software Engineering &amp; DevOps module.
+
+ASP.NET Core MVC Application Support Knowledge Portal for Software Engineering \& DevOps module.
 
 Project Overview:
 
 The Application Support Knowledge Portal is a secure, web-based system designed to centralise technical information about applications, servers, and troubleshooting notes used within Durham County Council. The goal is to replace documentation (emails, shared files, tacit knowledge) with a single, searchable, role-secured platform.
 
-This project is being developed as part of the Software Engineering & DevOps module and will also integrate with my Major Project (MCP Server) through a lightweight API.
+This project is being developed as part of the Software Engineering \& DevOps module and will also integrate with my Major Project (MCP Server) through a lightweight API.
 
 Current Project Status:
 
@@ -21,7 +22,7 @@ Tech Stack:
 * PostgreSQL (Render)
 * Docker for containerisation
 * GitHub for version control
-* GitHub Actions for CI/CD 
+* GitHub Actions for CI/CD
 * Render for cloud hosting and deployment
 
 Planned Database Schema:
@@ -30,7 +31,7 @@ The system will use a relational database with four core tables:
 
 * Applications - name, developer, environment, status
 * Servers - server name, OS, status
-* SupportNotes - troubleshooting notes, known issues, documentation links
+* Notes - troubleshooting notes, known issues, documentation links
 * Users - authentication + role-based access
 
 Security:
@@ -53,7 +54,7 @@ A lightweight, read-only API layer will expose selected data:
 
 This API will be consumed by my MCP Server as part of my Major Project.
 
-DevOps & Deployment:
+DevOps \& Deployment:
 
 The project will follow a modern DevOps workflow.
 
@@ -62,15 +63,19 @@ The project will follow a modern DevOps workflow.
 * Docker containerisation
 * Render deployment with automatic redeploys  on push
 
-Roadmap:
 
-* Database schema implementation
-* CRUD functionality for all entities
-* Authentication & role-based access
-* Search functionality
-* API layer
-* Dockerisation
-* CI/CD pipeline
-* Deployment to Render
-* Final documentation
+
+\## Source Code
+
+https://github.com/PMillerDCC/dcc-app-support-portal
+
+
+
+\## Live Demo
+
+https://dcc-app-support-portal-1.onrender.com/
+
+
+
+
 
