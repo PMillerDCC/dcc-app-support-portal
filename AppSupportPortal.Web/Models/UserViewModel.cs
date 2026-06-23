@@ -11,6 +11,7 @@ namespace AppSupportPortal.Web.Models
         [Display(Name = "Display Name")]
         public string DisplayName { get; set; } = string.Empty;
         [Required]
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
         [Display(Name = "Role Type")]
         public string RoleName { get; set; } = string.Empty;
